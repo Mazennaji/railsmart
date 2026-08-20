@@ -1,8 +1,4 @@
 Rails.application.routes.draw do
-  get "orders/new"
-  get "orders/create"
-  get "orders/show"
-  get "carts/show"
   root "products#index"
 
   resources :products, only: [:index, :show]
