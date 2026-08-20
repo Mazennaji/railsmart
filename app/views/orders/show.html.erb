@@ -1,49 +1,36 @@
 <div class="section-head" style="margin-top: 40px;">
-  <h2>Checkout</h2>
+  <div>
+    <h2>Order confirmed</h2>
+    <p class="hero-sub" style="margin-top: 8px;">
+      Thank you, <%= @order.customer_name %>. A receipt is on its way to <%= @order.email %>.
+    </p>
+  </div>
+  <span class="meta">Order #<%= @order.id %> &middot; <%= @order.status.capitalize %></span>
 </div>
 
-<div class="detail" style="padding-top: 0;">
-  <div>
-    <%= form_with model: @order, url: orders_path, method: :post do |f| %>
-      <% if @order.errors.any? %>
-        <div class="flash flash-alert" style="margin-bottom: 20px;">
-          <%= pluralize(@order.errors.count, "error") %> stopped this order from going through.
-        </div>
-      <% end %>
-
-      <div class="form-field">
-        <%= f.label :customer_name, "Full name" %>
-        <%= f.text_field :customer_name %>
-      </div>
-
-      <div class="form-field">
-        <%= f.label :email %>
-        <%= f.email_field :email %>
-      </div>
-
-      <div class="form-field">
-        <%= f.label :address, "Shipping address" %>
-        <%= f.text_area :address %>
-      </div>
-
-      <%= f.submit "Place order", class: "btn" %>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th class="num">Price</th>
+      <th class="num">Quantity</th>
+      <th class="num">Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @order.order_items.includes(:product).each do |item| %>
+      <tr>
+        <td><%= item.product.name %></td>
+        <td class="num">$<%= number_with_precision(item.price, precision: 2) %></td>
+        <td class="num"><%= item.quantity %></td>
+        <td class="num">$<%= number_with_precision(item.subtotal, precision: 2) %></td>
+      </tr>
     <% end %>
-  </div>
+  </tbody>
+</table>
 
-  <div>
-    <div class="section-head" style="margin-top: 0;">
-      <h2 style="font-size: 18px;">Order summary</h2>
-    </div>
-    <table class="table">
-      <tbody>
-        <% cart_items.each do |item| %>
-          <tr>
-            <td><%= item[:product].name %> &times; <%= item[:quantity] %></td>
-            <td class="num">$<%= number_with_precision(item[:subtotal], precision: 2) %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-    <div class="cart-total">Total: $<%= number_with_precision(cart_total, precision: 2) %></div>
-  </div>
+<div class="cart-total">Total: $<%= number_with_precision(@order.total, precision: 2) %></div>
+
+<div style="text-align: right;">
+  <%= link_to "Back to the catalog", root_path, class: "btn" %>
 </div>
