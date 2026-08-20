@@ -1,0 +1,52 @@
+<div class="admin-page-head">
+  <h1>Dashboard</h1>
+  <%= link_to "New product", new_admin_product_path, class: "admin-btn" %>
+</div>
+
+<div class="admin-cards">
+  <div class="admin-card"><div class="label">Products</div><div class="value"><%= @product_count %></div></div>
+  <div class="admin-card"><div class="label">Categories</div><div class="value"><%= @category_count %></div></div>
+  <div class="admin-card"><div class="label">Orders</div><div class="value"><%= @order_count %></div></div>
+  <div class="admin-card"><div class="label">Revenue</div><div class="value">$<%= number_with_precision(@revenue || 0, precision: 2) %></div></div>
+</div>
+
+<div class="admin-panel">
+  <h2>Recent orders</h2>
+  <% if @recent_orders.any? %>
+    <table class="admin-table">
+      <thead><tr><th>Order</th><th>Customer</th><th>Status</th><th class="num">Total</th></tr></thead>
+      <tbody>
+        <% @recent_orders.each do |order| %>
+          <tr>
+            <td><%= link_to "##{order.id}", admin_order_path(order) %></td>
+            <td><%= order.customer_name %></td>
+            <td><span class="pill pill-<%= order.status %>"><%= order.status %></span></td>
+            <td class="num">$<%= number_with_precision(order.total, precision: 2) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color:#8a8073;">No orders yet.</p>
+  <% end %>
+</div>
+
+<div class="admin-panel">
+  <h2>Low stock</h2>
+  <% if @low_stock.any? %>
+    <table class="admin-table">
+      <thead><tr><th>Product</th><th>Category</th><th class="num">Stock</th></tr></thead>
+      <tbody>
+        <% @low_stock.each do |product| %>
+          <tr>
+            <td><%= link_to product.name, edit_admin_product_path(product) %></td>
+            <td><%= product.category.name %></td>
+            <td class="num stock-low"><%= product.stock %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color:#8a8073;">Everything's well stocked.</p>
+  <% end %>
+</div>
