@@ -1,0 +1,31 @@
+<div class="detail">
+  <div class="detail-media">
+    <% if @product.image? %>
+      <%= image_tag @product.image, class: "detail-img" %>
+    <% else %>
+      <%= @product.name.first %>
+    <% end %>
+  </div>
+
+  <div>
+    <div class="product-cat"><%= link_to @product.category.name, category_path(@product.category) %></div>
+    <h1 class="detail-title"><%= @product.name %></h1>
+    <div class="detail-price">$<%= number_with_precision(@product.price, precision: 2) %></div>
+    <p class="detail-desc"><%= @product.description %></p>
+
+    <% if @product.stock > 0 %>
+      <%= form_with url: add_item_cart_path(@product), method: :post do %>
+        <div class="qty-row">
+          <label for="quantity">Quantity</label>
+          <input type="number" name="quantity" id="quantity" value="1" min="1" max="<%= @product.stock %>">
+          <span class="stock-ok"><%= @product.stock %> available</span>
+        </div>
+        <button type="submit" class="btn">Add to cart</button>
+      <% end %>
+    <% else %>
+      <p class="stock-out">This item is currently sold out.</p>
+    <% end %>
+
+    <p style="margin-top: 28px;"><%= link_to "&larr; Back to catalog".html_safe, root_path, class: "btn btn-ghost" %></p>
+  </div>
+</div>
