@@ -1,0 +1,42 @@
+<div class="admin-page-head">
+  <h1>Order #<%= @order.id %></h1>
+  <%= link_to "Back to orders", admin_orders_path, class: "admin-btn admin-btn-ghost" %>
+</div>
+
+<div class="admin-panel">
+  <h2>Customer</h2>
+  <p><strong><%= @order.customer_name %></strong><br>
+  <%= @order.email %><br>
+  <%= simple_format(@order.address) %></p>
+</div>
+
+<div class="admin-panel">
+  <h2>Items</h2>
+  <table class="admin-table">
+    <thead><tr><th>Product</th><th class="num">Price</th><th class="num">Qty</th><th class="num">Subtotal</th></tr></thead>
+    <tbody>
+      <% @order.order_items.includes(:product).each do |item| %>
+        <tr>
+          <td><%= item.product.name %></td>
+          <td class="num">$<%= number_with_precision(item.price, precision: 2) %></td>
+          <td class="num"><%= item.quantity %></td>
+          <td class="num">$<%= number_with_precision(item.subtotal, precision: 2) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <p style="text-align:right; font-family:Georgia,serif; font-size:22px; margin-top:16px;">
+    Total: $<%= number_with_precision(@order.total, precision: 2) %>
+  </p>
+</div>
+
+<div class="admin-panel">
+  <h2>Update status</h2>
+  <%= form_with model: [:admin, @order], method: :patch, class: "admin-form" do |f| %>
+    <div class="field">
+      <%= f.label :status %>
+      <%= f.select :status, Order::STATUSES.map { |s| [s.capitalize, s] }, selected: @order.status %>
+    </div>
+    <%= f.submit "Update status", class: "admin-btn" %>
+  <% end %>
+</div>
