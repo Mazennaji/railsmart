@@ -1,0 +1,35 @@
+<div class="section-head" style="margin-top: 40px;">
+  <div>
+    <h2><%= @category.name %></h2>
+    <p class="hero-sub" style="margin-top: 8px;"><%= @category.description %></p>
+  </div>
+  <span class="meta"><%= pluralize(@products.size, "product") %></span>
+</div>
+
+<% if @products.any? %>
+  <div class="product-grid">
+    <% @products.each do |product| %>
+      <%= link_to product_path(product), class: "product-card" do %>
+        <div class="product-thumb"><%= product.name.first %></div>
+        <div class="product-body">
+          <div class="product-cat"><%= product.category.name %></div>
+          <div class="product-name"><%= product.name %></div>
+          <div class="product-desc"><%= truncate(product.description, length: 60) %></div>
+          <div class="product-foot">
+            <span class="product-price">$<%= number_with_precision(product.price, precision: 0) %></span>
+            <% if product.stock > 0 %>
+              <span class="stock-ok"><%= product.stock %> in stock</span>
+            <% else %>
+              <span class="stock-out">Sold out</span>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% else %>
+  <div class="empty">
+    <h2>Nothing here yet</h2>
+    <p>No products in this category. Check back soon.</p>
+  </div>
+<% end %>
