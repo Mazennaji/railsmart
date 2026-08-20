@@ -17,4 +17,11 @@ Rails.application.routes.draw do
   end
 
   resources :orders, only: [:new, :create, :show]
+
+  namespace :admin do
+    root "dashboard#index"
+    resources :products
+    resources :categories
+    resources :orders, only: [:index, :show, :update]
+  end
 end
