@@ -1,4 +1,6 @@
 class OrdersController < ApplicationController
+  before_action :require_login
+
   def new
     redirect_to cart_path, alert: "Your cart is empty." and return if cart_items.empty?
     @order = Order.new
@@ -7,7 +9,7 @@ class OrdersController < ApplicationController
   def create
     redirect_to cart_path, alert: "Your cart is empty." and return if cart_items.empty?
 
-    @order = Order.new(order_params)
+    @order = current_user.orders.new(order_params)
 
     ActiveRecord::Base.transaction do
       @order.total = cart_total
