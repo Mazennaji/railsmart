@@ -1,0 +1,24 @@
+<div class="admin-page-head">
+  <h1>Categories</h1>
+  <%= link_to "New category", new_admin_category_path, class: "admin-btn" %>
+</div>
+
+<div class="admin-panel">
+  <table class="admin-table">
+    <thead><tr><th>Name</th><th>Products</th><th></th></tr></thead>
+    <tbody>
+      <% @categories.each do |category| %>
+        <tr>
+          <td><%= category.name %></td>
+          <td><%= category.products.count %></td>
+          <td>
+            <div class="admin-actions">
+              <%= link_to "Edit", edit_admin_category_path(category), class: "admin-btn admin-btn-ghost admin-btn-sm" %>
+              <%= button_to "Delete", admin_category_path(category), method: :delete, class: "admin-btn admin-btn-ghost admin-btn-sm admin-btn-danger", form: { data: { turbo_confirm: "Delete #{category.name}? This removes its products too." } } %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
