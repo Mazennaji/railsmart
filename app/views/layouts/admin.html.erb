@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>railsmart admin</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "admin", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="admin-body">
+    <header class="admin-header">
+      <div class="admin-wrap admin-header-inner">
+        <a href="<%= admin_root_path %>" class="admin-brand">railsmart <span>admin</span></a>
+        <nav class="admin-nav">
+          <%= link_to "Dashboard", admin_root_path %>
+          <%= link_to "Products", admin_products_path %>
+          <%= link_to "Categories", admin_categories_path %>
+          <%= link_to "Orders", admin_orders_path %>
+          <%= link_to "View store &rarr;".html_safe, root_path, class: "admin-exit" %>
+        </nav>
+      </div>
+    </header>
+
+    <% if notice.present? %>
+      <div class="admin-wrap"><div class="admin-flash admin-flash-notice"><%= notice %></div></div>
+    <% end %>
+    <% if alert.present? %>
+      <div class="admin-wrap"><div class="admin-flash admin-flash-alert"><%= alert %></div></div>
+    <% end %>
+
+    <main class="admin-wrap admin-main">
+      <%= yield %>
+    </main>
+  </body>
+</html>
