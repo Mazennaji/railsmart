@@ -1,0 +1,35 @@
+<section class="hero">
+  <div class="hero-eyebrow">Hand-forged since the first commit</div>
+  <h1 class="hero-title">Steel that remembers the hammer.</h1>
+  <p class="hero-sub">
+    Knives, tools, and hardware forged one piece at a time.
+    Built to outlast the person who buys them.
+  </p>
+  <a href="#catalog" class="btn">Browse the catalog &rarr;</a>
+</section>
+
+<div id="catalog" class="section-head">
+  <h2>The catalog</h2>
+  <span class="meta"><%= pluralize(@products.size, "product") %> &middot; <%= pluralize(@categories.size, "category") %></span>
+</div>
+
+<div class="product-grid">
+  <% @products.each do |product| %>
+    <%= link_to product_path(product), class: "product-card" do %>
+      <div class="product-thumb"><%= product.name.first %></div>
+      <div class="product-body">
+        <div class="product-cat"><%= product.category.name %></div>
+        <div class="product-name"><%= product.name %></div>
+        <div class="product-desc"><%= truncate(product.description, length: 60) %></div>
+        <div class="product-foot">
+          <span class="product-price">$<%= number_with_precision(product.price, precision: 0) %></span>
+          <% if product.stock > 0 %>
+            <span class="stock-ok"><%= product.stock %> in stock</span>
+          <% else %>
+            <span class="stock-out">Sold out</span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>
