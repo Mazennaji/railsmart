@@ -4,7 +4,7 @@ class CreateOrderItems < ActiveRecord::Migration[8.1]
       t.references :order, null: false, foreign_key: true
       t.references :product, null: false, foreign_key: true
       t.integer :quantity
-      t.decimal :price
+      t.decimal :price, precision: 10, scale: 2
 
       t.timestamps
     end
