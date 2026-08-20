@@ -1,0 +1,30 @@
+<div class="section-head" style="margin-top: 40px;">
+  <h2>Create your account</h2>
+</div>
+
+<div style="max-width: 420px;">
+  <%= form_with model: @user, url: signup_path, method: :post do |f| %>
+    <% if @user.errors.any? %>
+      <div class="flash flash-alert" style="margin-bottom: 20px;">
+        <%= pluralize(@user.errors.count, "error") %> stopped signup.
+      </div>
+    <% end %>
+
+    <div class="form-field">
+      <%= f.label :email %>
+      <%= f.email_field :email %>
+    </div>
+    <div class="form-field">
+      <%= f.label :password %>
+      <%= f.password_field :password %>
+    </div>
+    <div class="form-field">
+      <%= f.label :password_confirmation, "Confirm password" %>
+      <%= f.password_field :password_confirmation %>
+    </div>
+    <%= f.submit "Sign up", class: "btn" %>
+  <% end %>
+  <p style="margin-top: 18px; color: var(--stone-2);">
+    Already have an account? <%= link_to "Log in", login_path, style: "color: var(--ember);" %>
+  </p>
+</div>
