@@ -1,0 +1,22 @@
+<div class="admin-page-head"><h1>Orders</h1></div>
+
+<div class="admin-panel">
+  <% if @orders.any? %>
+    <table class="admin-table">
+      <thead><tr><th>Order</th><th>Customer</th><th>Date</th><th>Status</th><th class="num">Total</th></tr></thead>
+      <tbody>
+        <% @orders.each do |order| %>
+          <tr>
+            <td><%= link_to "##{order.id}", admin_order_path(order) %></td>
+            <td><%= order.customer_name %></td>
+            <td><%= order.created_at.strftime("%b %d, %Y") %></td>
+            <td><span class="pill pill-<%= order.status %>"><%= order.status %></span></td>
+            <td class="num">$<%= number_with_precision(order.total, precision: 2) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color:#8a8073;">No orders yet.</p>
+  <% end %>
+</div>
