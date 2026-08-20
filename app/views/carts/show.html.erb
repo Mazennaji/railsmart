@@ -1,2 +1,49 @@
-<h1>Carts#show</h1>
-<p>Find me in app/views/carts/show.html.erb</p>
+<div class="section-head" style="margin-top: 40px;">
+  <h2>Your cart</h2>
+  <span class="meta"><%= pluralize(cart_count, "item") %></span>
+</div>
+
+<% if cart_items.any? %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th class="num">Price</th>
+        <th class="num">Quantity</th>
+        <th class="num">Subtotal</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% cart_items.each do |item| %>
+        <tr>
+          <td><%= link_to item[:product].name, product_path(item[:product]) %></td>
+          <td class="num">$<%= number_with_precision(item[:product].price, precision: 2) %></td>
+          <td class="num">
+            <%= form_with url: update_item_cart_path(item[:product]), method: :patch, class: "inline-qty" do %>
+              <input type="number" name="quantity" value="<%= item[:quantity] %>" min="0" max="<%= item[:product].stock %>">
+              <button type="submit" class="btn btn-ghost" style="margin-top:0; padding:6px 12px;">Update</button>
+            <% end %>
+          </td>
+          <td class="num">$<%= number_with_precision(item[:subtotal], precision: 2) %></td>
+          <td class="num">
+            <%= button_to "Remove", remove_item_cart_path(item[:product]), method: :delete, class: "btn btn-ghost", style: "margin-top:0; padding:6px 12px;" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="cart-total">Total: $<%= number_with_precision(cart_total, precision: 2) %></div>
+
+  <div style="text-align: right;">
+    <%= link_to "Continue shopping", root_path, class: "btn btn-ghost" %>
+    <%= link_to "Checkout", new_order_path, class: "btn" %>
+  </div>
+<% else %>
+  <div class="empty">
+    <h2>Your cart is empty</h2>
+    <p>Browse the catalog and add something forged.</p>
+    <%= link_to "Browse the catalog", root_path, class: "btn" %>
+  </div>
+<% end %>
