@@ -22,6 +22,15 @@
           <%= link_to cart_path, class: "cart-link" do %>
             Cart (<%= @cart_count || 0 %>)
           <% end %>
+          <% if logged_in? %>
+            <% if current_user.admin? %>
+              <%= link_to "Admin", admin_root_path %>
+            <% end %>
+            <%= button_to "Log out", logout_path, method: :delete, class: "btn-ghost", style: "background:none;border:none;color:var(--stone);cursor:pointer;padding:0;font-size:14px;" %>
+          <% else %>
+            <%= link_to "Log in", login_path %>
+            <%= link_to "Sign up", signup_path %>
+          <% end %>
         </nav>
       </div>
     </header>
