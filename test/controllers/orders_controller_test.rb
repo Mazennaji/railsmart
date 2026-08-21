@@ -28,8 +28,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     log_in_as users(:buyer)
     other = orders(:buyer_order)
     other.update!(user: users(:boss))
-    assert_raises(ActiveRecord::RecordNotFound) do
-      get order_path(other)
-    end
+    get order_path(other)
+    assert_response :not_found
   end
 end
