@@ -1,6 +1,10 @@
 class OrdersController < ApplicationController
   before_action :require_login
 
+  def index
+    @orders = current_user.orders.order(created_at: :desc)
+  end
+
   def new
     redirect_to cart_path, alert: "Your cart is empty." and return if cart_items.empty?
     @order = Order.new
@@ -39,7 +43,7 @@ class OrdersController < ApplicationController
   end
 
   def show
-    @order = Order.find(params[:id])
+    @order = current_user.orders.find(params[:id])
   end
 
   private
