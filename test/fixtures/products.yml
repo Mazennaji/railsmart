@@ -1,15 +1,20 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+chef_knife:
+  name: Chef's Knife
+  description: An 8-inch carbon steel chef's knife.
+  price: 189.00
+  stock: 8
+  category: knives
 
-one:
-  name: MyString
-  description: MyText
-  price: 9.99
-  stock: 1
-  category: one
+hand_axe:
+  name: Hand Axe
+  description: A compact camp axe.
+  price: 118.00
+  stock: 7
+  category: tools
 
-two:
-  name: MyString
-  description: MyText
-  price: 9.99
-  stock: 1
-  category: two
+sold_out_cleaver:
+  name: Cleaver
+  description: A heavy cleaver.
+  price: 145.00
+  stock: 0
+  category: knives
