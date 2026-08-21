@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include CurrentCart
+  include Pagy::Backend
 
   helper_method :current_user, :logged_in?
 
