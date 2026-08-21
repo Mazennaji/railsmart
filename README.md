@@ -1,20 +1,26 @@
-# railsmart
+<p align="center">
+  <img src="app/assets/images/logo.png" alt="railsmart" width="380">
+</p>
 
-A full-stack e-commerce store built with Ruby on Rails 8 and PostgreSQL — product catalog, user accounts, a session-based shopping cart, checkout with order management, an admin back office, product image uploads, and catalog search. Built as a portfolio project to demonstrate clean Rails architecture end to end.
+<h1 align="center">railsmart</h1>
 
-<p>
+<p align="center">
+  A full-stack e-commerce store built with Ruby on Rails 8 and PostgreSQL. Product catalog with search, user accounts, a session-based shopping cart, Stripe checkout, an admin back office, and product image uploads. Built as a portfolio project to demonstrate clean Rails architecture end to end.
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Ruby-CC342D?style=for-the-badge&logo=ruby&logoColor=white" alt="Ruby">
   <img src="https://img.shields.io/badge/Rails-D30001?style=for-the-badge&logo=rubyonrails&logoColor=white" alt="Rails">
   <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge&logo=stripe&logoColor=white" alt="Stripe">
   <img src="https://img.shields.io/badge/Hotwire-FF4785?style=for-the-badge&logo=hotwire&logoColor=white" alt="Hotwire">
-  <img src="https://img.shields.io/badge/Puma-2C2C2C?style=for-the-badge&logo=puma&logoColor=white" alt="Puma">
 </p>
 
 ---
 
 ## Overview
 
-railsmart is a working online storefront. Visitors browse and search a product catalog, create an account, add items to a session cart, and place an order that is recorded with line items and a computed total. Administrators sign in to a separate back office to manage products, categories, inventory, and order status, and to upload product images. The codebase favors the conventional Rails approach — lean controllers, expressive models with chainable scopes, and Hotwire for interactivity — so it reads clearly and stays easy to extend.
+railsmart is a working online storefront. Visitors browse and search a product catalog, create an account, add items to a session cart, and pay by card through Stripe Checkout. Administrators sign in to a separate back office to manage products, categories, inventory, and order status, and to upload product images. The codebase favors the conventional Rails approach — lean controllers, expressive models with chainable scopes, and Hotwire for interactivity — so it reads clearly and stays easy to extend.
 
 ## Tech stack
 
@@ -24,10 +30,11 @@ railsmart is a working online storefront. Visitors browse and search a product c
 | Framework | Rails 8.1 |
 | Database | PostgreSQL |
 | Authentication | `has_secure_password` (bcrypt) |
+| Payments | Stripe Checkout |
 | File storage | Active Storage |
 | Front end | Hotwire (Turbo + Stimulus), Propshaft |
 | Server | Puma |
-| Testing | Minitest, Capybara |
+| Testing | Minitest |
 
 ## Features
 
@@ -37,23 +44,26 @@ railsmart is a working online storefront. Visitors browse and search a product c
 - **Category browsing** — narrow the catalog to a single category.
 - **Product detail pages** — full description, price, availability, and product image.
 - **Shopping cart** — session-based; add, update quantities, and remove items.
-- **Checkout** — requires a logged-in account; captures customer details and converts the cart into a persisted order tied to the user.
-- **Order confirmation** — a receipt page with line items and total.
+- **Stripe checkout** — requires a logged-in account; card payment is handled on Stripe's hosted page, so card details never touch the server.
+- **Order confirmation** — a receipt page with line items, total, and payment date.
 
 ### Accounts
 - **Sign up & log in** — email and password authentication built on `has_secure_password`, no external auth gem.
+- **Order history** — logged-in users can review all of their past orders.
 - **Gated checkout** — orders belong to a user; checkout redirects guests to log in.
 
 ### Admin back office
 - **Protected `/admin` namespace** — reachable only by users with an admin flag; non-admins are turned away.
 - **Dashboard** — product, category, order, and revenue counts, plus recent orders and low-stock alerts.
-- **Product & category management** — full create, edit, and delete.
-- **Product images** — upload images via Active Storage, shown across the storefront with a graceful fallback for products without one.
+- **Product & category management** — full create, edit, and delete, with pagination.
+- **Product images** — upload images via Active Storage, resized into variants with libvips and shown across the storefront with a graceful fallback for products without one.
 - **Order management** — review any order and advance its status through the lifecycle (`pending → paid → shipped`, or `cancelled`).
 
 ### Under the hood
-- **Stock safety** — orders validate against available inventory and decrement stock within a database transaction, so a failed order rolls back cleanly.
+- **Stock safety** — stock is decremented only after payment is confirmed, inside a database transaction, so abandoned payments never lock up inventory.
+- **Verified payments** — the success path re-checks payment status directly with Stripe rather than trusting the redirect.
 - **Price capture** — each order item records the price at the time of purchase, so historical orders stay accurate even if a product's price changes later.
+- **Test coverage** — model and controller tests across products, orders, users, cart, and admin authorization.
 
 ## Data model
 
@@ -73,6 +83,8 @@ User ──< Order ──< OrderItem >── Product >── Category
 
 - Ruby 3.2 or newer
 - PostgreSQL 14 or newer
+- libvips (for image variants)
+- A Stripe account (test mode is free)
 - Bundler (`gem install bundler`)
 
 ### Setup
@@ -85,7 +97,7 @@ cd railsmart
 # 2. Install dependencies
 bundle install
 
-# 3. Configure the database password (see below), then:
+# 3. Configure environment variables (see below), then:
 rails db:create
 rails db:migrate
 rails db:seed
@@ -96,19 +108,17 @@ rails server
 
 Visit **http://localhost:3000**.
 
-### Database configuration
+### Environment variables
 
-The app reads the PostgreSQL password from an environment variable rather than committing it. Set it before running any `rails` command:
+The app reads secrets from the environment rather than committing them. Set these before running the app (or place them in a gitignored `.env` file if using dotenv):
 
 ```bash
-# macOS / Linux
-export DATABASE_PASSWORD="your_postgres_password"
-
-# Windows (PowerShell)
-$env:DATABASE_PASSWORD="your_postgres_password"
+DATABASE_PASSWORD=your_postgres_password
+STRIPE_SECRET_KEY=sk_test_your_key
+STRIPE_PUBLISHABLE_KEY=pk_test_your_key
 ```
 
-`config/database.yml` picks this up automatically.
+Stripe test keys are available in your Stripe dashboard under Developers → API keys.
 
 ## Seed data
 
@@ -119,6 +129,16 @@ Default admin credentials (change these before deploying anywhere public):
 ```
 Email:    admin@railsmart.test
 Password: password123
+```
+
+## Payments
+
+Checkout uses Stripe Checkout in test mode. Use Stripe's test card to simulate a successful payment:
+
+```
+Card:   4242 4242 4242 4242
+Expiry: any future date
+CVC:    any 3 digits
 ```
 
 ## Testing
@@ -136,24 +156,26 @@ app/
     admin/             Dashboard, Products, Categories, Orders (protected)
     concerns/          CurrentCart (session cart logic)
   views/               Storefront and admin templates
-  assets/stylesheets/  application.css (storefront), admin.css (back office)
+  assets/              Stylesheets, logo, and favicon
 config/
   routes.rb            Application routes
   database.yml         PostgreSQL configuration
+  initializers/        Stripe and Pagy configuration
 db/
   migrate/             Schema migrations
   seeds.rb             Sample catalog and admin data
+test/                  Model and controller tests
 ```
 
 ## Roadmap
 
 Ideas for extending the project:
 
-- Order history for logged-in users
-- Pagination for the catalog and admin lists
-- Payment integration (Stripe)
-- Automated test coverage across models and controllers
-- Image variants via libvips for faster-loading thumbnails
+- Email receipts on successful payment
+- Stripe webhooks for asynchronous payment confirmation
+- Product reviews and ratings
+- Wishlists for logged-in users
+- Discount codes and promotions
 
 ## License
 
