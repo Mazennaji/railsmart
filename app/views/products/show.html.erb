@@ -1,5 +1,11 @@
 <div class="detail">
-  <div class="detail-media"><%= @product.name.first %></div>
+  <div class="detail-media">
+    <% if @product.image? %>
+      <%= image_tag @product.image.variant(:detail), class: "detail-img" %>
+    <% else %>
+      <%= @product.name.first %>
+    <% end %>
+  </div>
 
   <div>
     <div class="product-cat"><%= link_to @product.category.name, category_path(@product.category) %></div>

@@ -10,7 +10,13 @@
   <div class="product-grid">
     <% @products.each do |product| %>
       <%= link_to product_path(product), class: "product-card" do %>
-        <div class="product-thumb"><%= product.name.first %></div>
+        <div class="product-thumb">
+          <% if product.image? %>
+            <%= image_tag product.image.variant(:thumb), class: "thumb-img" %>
+          <% else %>
+            <%= product.name.first %>
+          <% end %>
+        </div>
         <div class="product-body">
           <div class="product-cat"><%= product.category.name %></div>
           <div class="product-name"><%= product.name %></div>

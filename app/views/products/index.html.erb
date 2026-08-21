@@ -45,7 +45,7 @@
       <%= link_to product_path(product), class: "product-card" do %>
         <div class="product-thumb">
           <% if product.image? %>
-            <%= image_tag product.image, class: "thumb-img" %>
+            <%= image_tag product.image.variant(:thumb), class: "thumb-img" %>
           <% else %>
             <%= product.name.first %>
           <% end %>
