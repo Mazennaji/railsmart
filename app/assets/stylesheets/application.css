@@ -210,3 +210,17 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 520px) {
   .filter-search, .filter-select, .filter-price { flex: 1 1 100%; width: 100%; }
 }
+
+.pagination { display: flex; justify-content: center; padding: 20px 0 50px; }
+.pagination nav.pagy { display: flex; gap: 6px; align-items: center; }
+.pagination .pagy a, .pagination .pagy span {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 38px; height: 38px; padding: 0 12px;
+  border: 1px solid var(--line-2); border-radius: 8px;
+  color: var(--stone); font-size: 14px; text-decoration: none;
+}
+.pagination .pagy a:hover { border-color: var(--ember); color: var(--cream); }
+.pagination .pagy a[aria-current="page"], .pagination .pagy .current {
+  background: var(--ember); color: var(--iron-800); border-color: var(--ember); font-weight: 600;
+}
+.pagination .pagy a.disabled, .pagination .pagy span.disabled { opacity: 0.35; }

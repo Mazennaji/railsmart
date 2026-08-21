@@ -65,3 +65,17 @@
 @media (max-width: 820px) {
   .admin-cards { grid-template-columns: repeat(2, 1fr); }
 }
+
+.admin-pagination { display: flex; justify-content: center; padding-top: 20px; }
+.admin-pagination nav.pagy { display: flex; gap: 6px; align-items: center; }
+.admin-pagination .pagy a, .admin-pagination .pagy span {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 36px; height: 36px; padding: 0 12px;
+  border: 1px solid #d6cfc3; border-radius: 8px;
+  color: #5f584d; font-size: 14px; text-decoration: none;
+}
+.admin-pagination .pagy a:hover { border-color: #c8703a; }
+.admin-pagination .pagy a[aria-current="page"], .admin-pagination .pagy .current {
+  background: #c8703a; color: #fff; border-color: #c8703a; font-weight: 600;
+}
+.admin-pagination .pagy a.disabled, .admin-pagination .pagy span.disabled { opacity: 0.4; }
