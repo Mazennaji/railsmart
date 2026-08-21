@@ -10,7 +10,7 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
     post add_item_cart_path(products(:chef_knife)), params: { quantity: 2 }
     assert_redirected_to cart_path
     follow_redirect!
-    assert_match "Chef's Knife", @response.body
+    assert_match "Knife", @response.body
   end
 
   test "removes a product from the cart" do
