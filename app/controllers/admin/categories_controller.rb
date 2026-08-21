@@ -2,7 +2,7 @@ class Admin::CategoriesController < Admin::BaseController
   before_action :set_category, only: [:edit, :update, :destroy]
 
   def index
-    @categories = Category.order(:name)
+    @pagy, @categories = pagy(Category.order(:name))
   end
 
   def new
