@@ -10,26 +10,66 @@
 
 <div id="catalog" class="section-head">
   <h2>The catalog</h2>
-  <span class="meta"><%= pluralize(@products.size, "product") %> &middot; <%= pluralize(@categories.size, "category") %></span>
+  <span class="meta"><%= pluralize(@products.size, "product") %> found</span>
 </div>
 
-<div class="product-grid">
-  <% @products.each do |product| %>
-    <%= link_to product_path(product), class: "product-card" do %>
-      <div class="product-thumb"><%= product.name.first %></div>
-      <div class="product-body">
-        <div class="product-cat"><%= product.category.name %></div>
-        <div class="product-name"><%= product.name %></div>
-        <div class="product-desc"><%= truncate(product.description, length: 60) %></div>
-        <div class="product-foot">
-          <span class="product-price">$<%= number_with_precision(product.price, precision: 0) %></span>
-          <% if product.stock > 0 %>
-            <span class="stock-ok"><%= product.stock %> in stock</span>
+<%= form_with url: root_path, method: :get, class: "filter-bar" do %>
+  <input type="text" name="q" value="<%= params[:q] %>" placeholder="Search products…" class="filter-search">
+
+  <select name="category_id" class="filter-select">
+    <option value="">All categories</option>
+    <% @categories.each do |category| %>
+      <option value="<%= category.id %>" <%= "selected" if params[:category_id] == category.id.to_s %>>
+        <%= category.name %>
+      </option>
+    <% end %>
+  </select>
+
+  <input type="number" name="min_price" value="<%= params[:min_price] %>" placeholder="Min $" class="filter-price" step="0.01">
+  <input type="number" name="max_price" value="<%= params[:max_price] %>" placeholder="Max $" class="filter-price" step="0.01">
+
+  <select name="sort" class="filter-select">
+    <option value="name"       <%= "selected" if @sort == "name" %>>Name (A–Z)</option>
+    <option value="price_asc"  <%= "selected" if @sort == "price_asc" %>>Price (low to high)</option>
+    <option value="price_desc" <%= "selected" if @sort == "price_desc" %>>Price (high to low)</option>
+    <option value="newest"     <%= "selected" if @sort == "newest" %>>Newest</option>
+  </select>
+
+  <button type="submit" class="btn" style="margin-top:0;">Apply</button>
+  <%= link_to "Clear", root_path, class: "btn btn-ghost", style: "margin-top:0;" %>
+<% end %>
+
+<% if @products.any? %>
+  <div class="product-grid">
+    <% @products.each do |product| %>
+      <%= link_to product_path(product), class: "product-card" do %>
+        <div class="product-thumb">
+          <% if product.image? %>
+            <%= image_tag product.image, class: "thumb-img" %>
           <% else %>
-            <span class="stock-out">Sold out</span>
+            <%= product.name.first %>
           <% end %>
         </div>
-      </div>
+        <div class="product-body">
+          <div class="product-cat"><%= product.category.name %></div>
+          <div class="product-name"><%= product.name %></div>
+          <div class="product-desc"><%= truncate(product.description, length: 60) %></div>
+          <div class="product-foot">
+            <span class="product-price">$<%= number_with_precision(product.price, precision: 0) %></span>
+            <% if product.stock > 0 %>
+              <span class="stock-ok"><%= product.stock %> in stock</span>
+            <% else %>
+              <span class="stock-out">Sold out</span>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
     <% end %>
-  <% end %>
-</div>
+  </div>
+<% else %>
+  <div class="empty">
+    <h2>No products match</h2>
+    <p>Try a different search or clear the filters.</p>
+    <%= link_to "Clear filters", root_path, class: "btn" %>
+  </div>
+<% end %>
