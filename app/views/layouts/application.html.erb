@@ -22,7 +22,8 @@
           <%= link_to cart_path, class: "cart-link" do %>
             Cart (<%= @cart_count || 0 %>)
           <% end %>
-          <% if logged_in? %>
+            <% if logged_in? %>
+            <%= link_to "Orders", orders_path %>
             <% if current_user.admin? %>
               <%= link_to "Admin", admin_root_path %>
             <% end %>
