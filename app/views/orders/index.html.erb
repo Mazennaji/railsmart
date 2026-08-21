@@ -1,0 +1,35 @@
+<div class="section-head" style="margin-top: 40px;">
+  <h2>Your orders</h2>
+  <span class="meta"><%= pluralize(@orders.size, "order") %></span>
+</div>
+
+<% if @orders.any? %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Order</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th class="num">Items</th>
+        <th class="num">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @orders.each do |order| %>
+        <tr>
+          <td><%= link_to "##{order.id}", order_path(order), style: "color: var(--ember);" %></td>
+          <td><%= order.created_at.strftime("%b %d, %Y") %></td>
+          <td><%= order.status.capitalize %></td>
+          <td class="num"><%= order.order_items.sum(:quantity) %></td>
+          <td class="num">$<%= number_with_precision(order.total, precision: 2) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="empty">
+    <h2>No orders yet</h2>
+    <p>When you place an order, it'll show up here.</p>
+    <%= link_to "Browse the catalog", root_path, class: "btn" %>
+  </div>
+<% end %>
