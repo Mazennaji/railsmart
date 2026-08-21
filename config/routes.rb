@@ -16,7 +16,11 @@ Rails.application.routes.draw do
     delete "remove/:product_id", to: "carts#remove", as: :remove_item
   end
 
-  resources :orders, only: [:index, :new, :create, :show]
+  resources :orders, only: [:index, :new, :create, :show] do
+    member do
+      get "success", to: "orders#success"
+    end
+  end
 
   namespace :admin do
     root "dashboard#index"
