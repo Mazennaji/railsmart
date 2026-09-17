@@ -32,7 +32,7 @@ gem "fiddle"
 gem "bcrypt", "~> 3.1.7"
 gem "image_processing", "~> 1.2"
 gem "pagy", "~> 9.0"
-gem "stripe", "~> 12.0"
+gem "stripe", "~> 19.6"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
